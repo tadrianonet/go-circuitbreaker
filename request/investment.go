@@ -18,7 +18,7 @@ func NewInvestmentRequest(cb *gobreaker.CircuitBreaker) *InvestmentRequest {
 	return &InvestmentRequest{
 		cb:     cb,
 		client: http.Client{},
-		url:    "http://localhost:8081/api/v1/investment",
+		url:    "https://go-invest-example.onrender.com/api/v1/investment",
 	}
 }
 
@@ -33,6 +33,7 @@ func (r *InvestmentRequest) GetInvestmentData() ([]byte, error) {
 	}
 
 	body, err := r.cb.Execute(func() (interface{}, error) {
+
 		req, err := http.NewRequest(http.MethodGet, r.url, nil)
 		if err != nil {
 			return nil, err
@@ -45,7 +46,6 @@ func (r *InvestmentRequest) GetInvestmentData() ([]byte, error) {
 		}
 		defer resp.Body.Close()
 
-		// Se a resposta não for OK, registra o código de erro
 		if resp.StatusCode != http.StatusOK {
 			fmt.Printf("Erro na resposta da API de investimentos: %v\n", resp.Status)
 			return nil, fmt.Errorf("erro na resposta: %v", resp.Status)
